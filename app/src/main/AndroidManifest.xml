@@ -28,7 +28,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".activity.SplashPageActivity">
+        <activity android:name=".activity.SplashPageActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

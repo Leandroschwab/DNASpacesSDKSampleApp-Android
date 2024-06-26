@@ -9,37 +9,36 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Switch
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.cisco.or.R
 import com.cisco.or.activity.login.SelectSigningServiceActivity
+import com.cisco.or.databinding.IdentityBinding
+import com.cisco.or.databinding.IdentityDataGoogleBinding
 import com.cisco.or.sdk.OpenRoaming
-import com.cisco.or.sdk.models.User
 import com.cisco.or.sdk.models.UserDetail
 import com.cisco.or.utils.Constant
-import com.cisco.or.utils.PushNotification
-import kotlinx.android.synthetic.main.identity.view.*
-import java.util.*
 
 class IdentitiesFragment : Fragment() {
     companion object {
         private val TAG: String = IdentitiesFragment::class.java.name
     }
 
+    private lateinit var binding: IdentityBinding
+    //private lateinit var bindingIdentityData: IdentityDataGoogleBinding
     var pushToken = ""
     var privacySettings = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val identityView = inflater.inflate(R.layout.identity, container, false)
-
-            try{
+        binding = IdentityBinding.inflate(inflater, container, false)
+        val identityView = binding.root
+        identityView.setTag("identityView")
+        try{
                 OpenRoaming.getUserDetails { user ->
                     OpenRoaming.getPrivacySettings { privacySettings ->
                         this.privacySettings = privacySettings
-                        loadFragment(user, inflater, container, identityView, privacySettings)
+                        loadFragment(user, inflater, container, privacySettings)
                     }
                 }
             } catch (e: Exception) {
@@ -48,41 +47,42 @@ class IdentitiesFragment : Fragment() {
         return identityView
     }
 
-    private fun fillIdentity(userDetail: UserDetail, inflater: LayoutInflater, container: ViewGroup?, viewMain : View, privacy: Boolean) {
+    private fun fillIdentity(userDetail: UserDetail, inflater: LayoutInflater, container: ViewGroup?, privacy: Boolean) {
         if (userDetail != null) {
 
-            viewMain.findViewById<Button>(R.id.deleteaccount).setOnClickListener {
+            val bindingIdentityData = IdentityDataGoogleBinding.inflate(inflater, container, false)
+            //val bindingIdentityData = IdentityDataGoogleBinding.bind(viewMain)
+
+            binding.deleteaccount.setOnClickListener {
                 deleteAccount(userDetail)
             }
-            viewMain.findViewById<Button>(R.id.deleteProfile).setOnClickListener {
+            binding.deleteProfile.setOnClickListener {
                 deleteProfile()
             }
-            viewMain.findViewById<Button>(R.id.updateButton).setOnClickListener {
+            binding.updateButton.setOnClickListener {
                 updateUser(userDetail)
             }
-            viewMain.findViewById<Button>(R.id.lastPushNotification).setOnClickListener {
+            binding.lastPushNotification.setOnClickListener {
                 lastPushNotification()
             }
-            var identityDataView = inflater.inflate(R.layout.identity_data_google, container, false)
-                var email = userDetail.email
-                if (email.isNullOrBlank()) {
-                    email = "Not Available"
-                }
-                identityDataView!!.findViewById<TextView>(R.id.emailText).text = email
-                val switchPrivacy = identityDataView.findViewById<Switch>(R.id.switch1)
 
-                switchPrivacy.isChecked = privacySettings
+            var email = userDetail.email
+            if (email.isNullOrBlank()) {
+                email = "Not Available"
+            }
+            bindingIdentityData.emailText.text = email
 
-                switchPrivacy.setOnCheckedChangeListener { _, isChecked ->
-                    if (!isChecked) privacySettingsDialog(switchPrivacy) else sendPrivacySettings(isChecked)
-                }
+            bindingIdentityData.switch1.isChecked = privacySettings
+            bindingIdentityData.switch1.setOnCheckedChangeListener { _, isChecked ->
+                if (!isChecked) privacySettingsDialog(bindingIdentityData.switch1) else sendPrivacySettings(isChecked)
+            }
 
-                val switchPush = identityDataView.findViewById<Switch>(R.id.pushSwitch)
-                switchPush.isChecked = OpenRoaming.isActiveAssociatePush()
-                switchPush.setOnCheckedChangeListener { _, isChecked ->
-                    setPushNotificationAssociate(isChecked)
-                }
-            viewMain.identityLayout.addView(identityDataView)
+            bindingIdentityData.pushSwitch.isChecked = OpenRoaming.isActiveAssociatePush()
+            bindingIdentityData.pushSwitch.setOnCheckedChangeListener { _, isChecked ->
+                setPushNotificationAssociate(isChecked)
+            }
+
+            binding.identityLayout.addView(bindingIdentityData.root)
         }
     }
 
@@ -207,15 +207,16 @@ class IdentitiesFragment : Fragment() {
         }
     }
 
-    private fun loadFragment(userDetail: UserDetail,inflater: LayoutInflater, container: ViewGroup?, viewMain : View, privacy : Boolean) {
+    private fun loadFragment(userDetail: UserDetail,inflater: LayoutInflater, container: ViewGroup?, privacy : Boolean) {
         activity?.runOnUiThread {
-            fillIdentity(userDetail,inflater, container, viewMain, privacy)
+            fillIdentity(userDetail,inflater, container, privacy)
         }
     }
 
+
     private fun lastPushNotification() {
         val fragment = LastPushNotificationFragment()
-        fragmentManager
+        activity?.supportFragmentManager
             ?.beginTransaction()
             ?.add(R.id.container, fragment)
             ?.addToBackStack("LastPushNotificationFragment")

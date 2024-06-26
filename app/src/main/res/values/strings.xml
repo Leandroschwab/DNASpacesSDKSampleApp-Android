@@ -85,4 +85,8 @@
     <string name="no_notifications_title">No notifications to show</string>
     <string name="invalid_email">Please insert a valid e-mail.</string>
     <string name="invalid_phone">Please insert a valid phone.</string>
+    <string name="sign_up_with_apple">Sign Up with Apple</string>
+    <string name="google_login">Google Login</string>
+    <string name="apple_login">Apple Login</string>
+    <string name="open_roaming">Open Roaming</string>
 </resources>

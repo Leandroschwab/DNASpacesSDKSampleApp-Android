@@ -11,7 +11,8 @@
 
         <ImageView android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:src="@drawable/open_roaming" android:layout_gravity="center"
+            android:contentDescription="@string/open_roaming"
+            android:src="@drawable/open_roaming" android:layout_gravity="center"
                    android:layout_marginTop="168dp"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:text="@string/or" android:textColor="#1D3243" android:textSize="22.5sp"
@@ -23,11 +24,13 @@
                 android:layout_marginTop="50dp" style="?android:borderlessButtonStyle"
                 android:layout_width="wrap_content" android:layout_gravity="center"
                 android:layout_height="wrap_content" android:id="@+id/google-sign-up"
-                android:src="@drawable/signupwithgoogle"
+            android:contentDescription="@string/google_login"
+            android:src="@drawable/signupwithgoogle"
                 android:textAllCaps="false" android:clickable="true"
                 android:textColor="@android:color/white"/>
         <ImageButton
-                android:text="Sign Up with Apple" android:layout_marginTop="10dp" style="?android:borderlessButtonStyle"
+            android:contentDescription="@string/apple_login"
+            android:text="@string/sign_up_with_apple" android:layout_marginTop="10dp" style="?android:borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:src="@drawable/signinwithapple"
                 android:layout_height="wrap_content" android:id="@+id/apple-sign-up"
@@ -38,7 +41,8 @@
 
         <ImageView android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:src="@drawable/cisco_logo" android:layout_gravity="center"
+            android:contentDescription="@string/cisco_logo"
+            android:src="@drawable/cisco_logo" android:layout_gravity="center"
                    android:layout_marginTop="127dp"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
